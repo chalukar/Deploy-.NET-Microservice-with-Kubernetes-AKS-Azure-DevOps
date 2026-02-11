@@ -11,10 +11,10 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["eshopping.client/eshopping.client.csproj", "eshopping.client/"]
-RUN dotnet restore "./eshopping.client/eshopping.client.csproj"
+COPY ["eshopping.client.csproj", "./"]
+RUN dotnet restore "./eshopping.client.csproj"
 COPY . .
-WORKDIR "/src/eshopping.client"
+#WORKDIR "/src/eshopping.client"
 RUN dotnet build "./eshopping.client.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
