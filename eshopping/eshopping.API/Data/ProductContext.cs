@@ -1,12 +1,35 @@
-﻿using eshopping.client.Models;
+﻿using eshopping.API.Models;
+using MongoDB.Driver;
 
 namespace eshopping.client.Data
 {
-    public static class ProductContext
+    public class ProductContext
     {
-        public static readonly List<Product> Products = new List<Product>
+        public ProductContext(IConfiguration configuration)
         {
-            new Product
+            var client = new MongoClient(configuration["DatabaseSettings:ConnectionStrings"]);
+            var database = client.GetDatabase(configuration["DatabaseSettings:DatabaseName"]);
+
+            Products = database.GetCollection<Product>(configuration["DatabaseSettings:CollectionName"]);
+            SeedData(Products);
+        }
+
+        public IMongoCollection<Product> Products { get; }
+
+        private static void SeedData(IMongoCollection<Product> productCollection)
+        {
+            bool existProduct = productCollection.Find(p => true).Any();
+            if (!existProduct)
+            {
+                productCollection.InsertManyAsync(GetPreconfiguredProducts());
+            }
+        }
+
+        private static IEnumerable<Product> GetPreconfiguredProducts()
+        {
+            return new List<Product>()
+            {
+                new Product
             {
                 Name = "Laptop",
                 Category = "Laptop",
@@ -39,6 +62,8 @@ namespace eshopping.client.Data
                 ImageFile = "coffeemaker.jpg",
                 Price = 49.99m
             }
-        };
+            };
+        }
+      
     }
 }

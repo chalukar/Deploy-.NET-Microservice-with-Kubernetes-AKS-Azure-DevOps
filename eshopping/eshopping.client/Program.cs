@@ -3,7 +3,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddHttpClient("ShoppingAPIClient", client =>
+{
+    var apiAddress = builder.Configuration["ProductApiUrl"] ?? "http://localhost:5047/";
+    client.BaseAddress = new Uri(apiAddress);
+});
+
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

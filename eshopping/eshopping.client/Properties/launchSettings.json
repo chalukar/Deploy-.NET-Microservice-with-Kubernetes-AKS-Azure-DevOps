@@ -14,7 +14,8 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "environmentVariables": {
-        "ASPNETCORE_HTTP_PORTS": "8080"
+        "ASPNETCORE_HTTP_PORTS": "8080",
+        "ProductApiUrl": "http://host.docker.internal:5047/"
       },
       "publishAllPorts": true,
       "useSSL": false

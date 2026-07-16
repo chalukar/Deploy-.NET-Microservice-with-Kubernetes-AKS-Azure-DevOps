@@ -1,5 +1,6 @@
 using System.Diagnostics;
-using eshopping.client.Data;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using eshopping.client.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,16 +8,26 @@ namespace eshopping.client.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly HttpClient _httpClient;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+
+        public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
+            _httpClient = httpClientFactory.CreateClient("ShoppingAPIClient");
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(ProductContext.Products);
+            var response = await _httpClient.GetAsync("/product");
+            var content = await response.Content.ReadAsStringAsync();
+            var productsList = JsonSerializer.Deserialize<IEnumerable<Product>>(content, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            return View(productsList);
         }
 
         public IActionResult Privacy()

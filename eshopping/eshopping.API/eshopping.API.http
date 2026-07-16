@@ -1,4 +1,4 @@
-@eshopping.API_HostAddress = http://localhost:5050
+@eshopping.API_HostAddress = http://localhost:5047
 
 GET {{eshopping.API_HostAddress}}/weatherforecast/
 Accept: application/json
